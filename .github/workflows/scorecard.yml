@@ -5,13 +5,13 @@ name: Scorecard
 # whether CI runs on pull requests, and so on. Results are published to the
 # public API, which is what the badge in the README reads.
 #
-# It runs weekly rather than per-commit because the checks are mostly about
-# repository *configuration*, which changes rarely.
+# Weekly rather than per-commit: the checks are mostly about repository
+# *configuration*, which changes rarely.
 
 on:
-  # Without this there is no way to force a Scorecard refresh -- you wait for
-  # the Tuesday cron. Added because the badge reads the published result, and
-  # after a rename or a settings change you want it now.
+  # Without this there is no way to force a refresh -- you wait for the Tuesday
+  # cron. The badge reads the published result, so after a rename or a settings
+  # change you want it now.
   workflow_dispatch:
   branch_protection_rule:
   schedule:
@@ -31,21 +31,28 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: actions/checkout@v4
+      # Every action is pinned to a full commit SHA. A tag is mutable: whoever
+      # controls the action's repository can repoint v4 at anything, and every
+      # workflow trusting that tag then runs the new code with your token. The
+      # trailing comment keeps it readable.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
-      - uses: ossf/scorecard-action@v2.4.0
+
+      - uses: ossf/scorecard-action@62b2cac7ed8198b15735ed49ab1e5cf35480ba46 # v2.4.0
         with:
           results_file: results.sarif
           results_format: sarif
           # Publishing is what makes the README badge resolve. Without it the
-          # badge shows "unknown" forever.
+          # badge reads "unknown" forever.
           publish_results: true
-      - uses: actions/upload-artifact@v4
+
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: SARIF file
           path: results.sarif
           retention-days: 5
-      - uses: github/codeql-action/upload-sarif@v3
+
+      - uses: github/codeql-action/upload-sarif@e60ea984bd3baa95954f2856bcf24f9eaba46637 # v3
         with:
           sarif_file: results.sarif
