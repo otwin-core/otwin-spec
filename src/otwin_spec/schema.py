@@ -86,7 +86,11 @@ def _semantic_checks(m: dict[str, Any]) -> list[str]:
         if unknown:
             errors.append(f"estimated: names not present in parameters: {sorted(unknown)}")
     v = m.get("validation")
-    if isinstance(v, dict) and "leakage_free" in v and v["leakage_free"] not in (True, False):
+    # `isinstance(..., bool)`, not `not in (True, False)`. In Python `1 == True`,
+    # so `1 in (True, False)` is True and the integer form -- the single most
+    # likely round-trip artefact, since MATLAB's jsonencode writes logicals as
+    # 1/0 -- sailed straight through the check written to catch it.
+    if isinstance(v, dict) and "leakage_free" in v and not isinstance(v["leakage_free"], bool):
         errors.append(
             "validation/leakage_free: must be a JSON boolean. A 1, a 0 or the "
             "string 'false' is a round-trip artefact and must not read as validated."

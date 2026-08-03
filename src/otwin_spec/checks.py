@@ -689,7 +689,10 @@ def run_check(spec: dict, outputs: dict) -> CheckResult:
         fixture referring to a check this runner does not implement is a
         version mismatch, and passing silently would be worse than failing.
     """
-    kind = spec.get("kind")
+    # `str(...)` rather than a bare `.get(kind)`: a fixture is arbitrary JSON,
+    # so `kind` can be absent or a non-string, and dict.get is typed for str.
+    # An unknown kind must fail loudly below, not raise here.
+    kind = str(spec.get("kind", ""))
     fn = CHECK_KINDS.get(kind)
     if fn is None:
         return CheckResult(

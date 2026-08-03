@@ -2,10 +2,12 @@
 
 **The normative Otwin specification, and a conformance suite that can judge any implementation in any language.**
 
-[![CI](https://img.shields.io/badge/CI-pending-lightgrey?style=flat-square)](https://github.com/otwin-core/otwin-spec/actions)
-[![Spec](https://img.shields.io/badge/spec-v1.0%20draft-blueviolet?style=flat-square)](spec/SPECIFICATION.md)
+[![CI](https://img.shields.io/github/actions/workflow/status/otwin-core/otwin-spec/ci.yml?style=flat-square&label=CI)](https://github.com/otwin-core/otwin-spec/actions)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat-square)](https://opensource.org/licenses/apache)
-[![Maturity: Medium](https://img.shields.io/badge/maturity-medium-yellow?style=flat-square)](https://github.com/otwin-core#maturity)
+[![Stars](https://img.shields.io/github/stars/otwin-core/otwin-spec?style=flat-square&label=Stars)](https://github.com/otwin-core/otwin-spec/stargazers)
+[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/otwin-core/otwin-spec?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/otwin-core/otwin-spec)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13420/badge)](https://www.bestpractices.dev/projects/13420)
 
 ---
 

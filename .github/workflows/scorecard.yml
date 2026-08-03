@@ -1,0 +1,47 @@
+name: Scorecard
+
+# OpenSSF Scorecard grades this repository against automated supply-chain
+# checks -- pinned actions, branch protection, dependency update tooling,
+# whether CI runs on pull requests, and so on. Results are published to the
+# public API, which is what the badge in the README reads.
+#
+# It runs weekly rather than per-commit because the checks are mostly about
+# repository *configuration*, which changes rarely.
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: '31 5 * * 2'
+  push:
+    branches: [main]
+
+permissions: read-all
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      id-token: write        # required to publish results to the public API
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: ossf/scorecard-action@v2.4.0
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          # Publishing is what makes the README badge resolve. Without it the
+          # badge shows "unknown" forever.
+          publish_results: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SARIF file
+          path: results.sarif
+          retention-days: 5
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif

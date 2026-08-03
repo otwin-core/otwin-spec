@@ -281,7 +281,11 @@ def heat_exchanger_2body(
     )
 
 
-MODELS = {
+# Annotated so mypy knows what comes out of it. Without this the values are
+# inferred as four distinct concrete function types and `MODELS[kind](**kwargs)`
+# is "call of unknown type" -- which is the kind of error that makes people turn
+# --strict off rather than fix it.
+MODELS: dict[str, Callable[..., ReferencePHS]] = {
     "water_tank": water_tank,
     "dc_motor": dc_motor,
     "pumped_hydro": pumped_hydro,

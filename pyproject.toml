@@ -53,3 +53,17 @@ python_version = "3.10"
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra -q --strict-markers"
+
+# A lambda is the clearest way to pass a one-line function to a numerical
+# routine under test -- `numerical_gradient(lambda x: x[0]**2, ...)` reads
+# better than a def three lines above the assertion. E731 is a good rule in
+# library code and noise in tests.
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E731"]
+
+# scipy ships no type stubs, and scipy-stubs is not mature enough to depend on.
+# Without this, `mypy src` fails with import-untyped on every scipy import --
+# which says nothing about this package's own types and turned the quality job red.
+[[tool.mypy.overrides]]
+module = ["scipy.*", "sklearn.*", "matplotlib.*", "seaborn.*", "pandas.*", "jsonschema.*"]
+ignore_missing_imports = true
