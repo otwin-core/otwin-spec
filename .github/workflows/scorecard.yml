@@ -1,17 +1,24 @@
 name: Scorecard
 
-# OpenSSF Scorecard grades this repository against automated supply-chain
-# checks -- pinned actions, branch protection, dependency update tooling,
-# whether CI runs on pull requests, and so on. Results are published to the
-# public API, which is what the badge in the README reads.
+# OpenSSF Scorecard, rebuilt from scratch on 2026-08-03.
 #
-# Weekly rather than per-commit: the checks are mostly about repository
-# *configuration*, which changes rarely.
+# The previous workflow was inherited from the pre-rename repository. Its
+# results were published under github.com/Javihaus/otwin, and Scorecard keys
+# results by repository path without following GitHub's rename redirect -- so
+# after otwin -> otwin-hybrid the badge asked for a path the API had never
+# heard of and rendered "invalid repo path". Nothing was wrong with the score
+# (7.1 on 2026-08-01); the address was simply stale.
+#
+# This version publishes under the current path and pins every action to a
+# full commit SHA. A tag is mutable: whoever controls the action's repository
+# can repoint it, and every workflow trusting that tag then runs the new code
+# against your token. That is what Scorecard's own Pinned-Dependencies check
+# is measuring, so an unpinned Scorecard workflow marks itself down.
 
 on:
-  # Without this there is no way to force a refresh -- you wait for the Tuesday
-  # cron. The badge reads the published result, so after a rename or a settings
-  # change you want it now.
+  # Lets you force a refresh instead of waiting for the Tuesday cron. The badge
+  # reads the last published result, so after a rename or a settings change you
+  # want to republish immediately rather than in six days.
   workflow_dispatch:
   branch_protection_rule:
   schedule:
@@ -19,6 +26,7 @@ on:
   push:
     branches: [main]
 
+# Read-only by default; the analysis job elevates only what it needs.
 permissions: read-all
 
 jobs:
@@ -26,33 +34,35 @@ jobs:
     name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
+      # Upload the SARIF to the Security tab.
       security-events: write
-      id-token: write        # required to publish results to the public API
+      # Publish to the public API. Without this the badge never resolves,
+      # however many times the workflow succeeds.
+      id-token: write
       contents: read
       actions: read
     steps:
-      # Every action is pinned to a full commit SHA. A tag is mutable: whoever
-      # controls the action's repository can repoint v4 at anything, and every
-      # workflow trusting that tag then runs the new code with your token. The
-      # trailing comment keeps it readable.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # Scorecard reads the repository; it must never hold a writable token.
           persist-credentials: false
 
-      - uses: ossf/scorecard-action@62b2cac7ed8198b15735ed49ab1e5cf35480ba46 # v2.4.0
+      - name: Run analysis
+        uses: ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc # v2.4.4
         with:
           results_file: results.sarif
           results_format: sarif
-          # Publishing is what makes the README badge resolve. Without it the
-          # badge reads "unknown" forever.
           publish_results: true
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - name: Keep the SARIF as an artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: SARIF file
           path: results.sarif
           retention-days: 5
 
-      - uses: github/codeql-action/upload-sarif@e60ea984bd3baa95954f2856bcf24f9eaba46637 # v3
+      - name: Upload to the Security tab
+        uses: github/codeql-action/upload-sarif@d1ba80a13dd99fba24a470575428917156a28b43 # v4.37.5
         with:
           sarif_file: results.sarif
