@@ -9,6 +9,10 @@ name: Scorecard
 # repository *configuration*, which changes rarely.
 
 on:
+  # Without this there is no way to force a Scorecard refresh -- you wait for
+  # the Tuesday cron. Added because the badge reads the published result, and
+  # after a rename or a settings change you want it now.
+  workflow_dispatch:
   branch_protection_rule:
   schedule:
     - cron: '31 5 * * 2'

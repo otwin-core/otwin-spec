@@ -4,10 +4,9 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/otwin-core/otwin-spec/ci.yml?style=flat-square&label=CI)](https://github.com/otwin-core/otwin-spec/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
-[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat-square)](https://opensource.org/licenses/apache)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat-square)](https://opensource.org/license/apache-2-0)
 [![Stars](https://img.shields.io/github/stars/otwin-core/otwin-spec?style=flat-square&label=Stars)](https://github.com/otwin-core/otwin-spec/stargazers)
 [![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/otwin-core/otwin-spec?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/otwin-core/otwin-spec)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13420/badge)](https://www.bestpractices.dev/projects/13420)
 
 ---
 
