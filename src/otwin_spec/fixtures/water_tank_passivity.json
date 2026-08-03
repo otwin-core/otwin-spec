@@ -1,0 +1,46 @@
+{
+  "fixture_version": "1.0",
+  "id": "water_tank_passivity",
+  "title": "A draining tank cannot gain energy, including after it empties",
+  "rationale": "With the inflow off, dH/dt = -grad_H^T R grad_H <= 0, at EVERY step and ANY step size -- which is what distinguishes a structure-preserving integrator from a merely accurate one. The horizon deliberately runs past the emptying time (10.6 s) so that the energy trace has a flat tail: while the level is still falling steeply a small energy leak hides inside the true decay, and the fixture only becomes sensitive once the energy has flattened. The tail also exercises the trap that H = (1/2) rho g A h^2 is EVEN in h, so a step overshooting below empty reads back as INCREASED energy; a model that does not clamp the head at zero passes or fails depending on where its final step lands -- that is, on the grid rather than on the physics. The exact drain law is checked separately by water_tank_drain_law; this fixture is about passivity alone.",
+  "model_class": "port_hamiltonian",
+  "model_kind": "water_tank",
+  "parameters": {
+    "A": 1.0,
+    "a": 0.1,
+    "g": 9.81,
+    "c_d": 0.6,
+    "rho": 1000.0,
+    "_units": "A, a in m^2; g in m/s^2; c_d dimensionless; rho in kg/m^3"
+  },
+  "scenario": {
+    "x0": [
+      2.0
+    ],
+    "t": {
+      "start": 0.0,
+      "stop": 60.0,
+      "num": 600
+    },
+    "u": {
+      "kind": "zeros"
+    }
+  },
+  "checks": [
+    {
+      "id": "energy_non_increasing",
+      "kind": "monotone_non_increasing",
+      "quantity": "energy",
+      "abs_tol": 1e-09,
+      "closed_form": "dH/dt <= 0 for u = 0, at every step"
+    },
+    {
+      "id": "energy_reaches_zero",
+      "kind": "final_value",
+      "quantity": "energy",
+      "expected": 0.0,
+      "abs_tol": 0.001,
+      "closed_form": "H(60 s) = 0: the tank empties at 2A sqrt(h0)/(c_d a sqrt(2g)) = 10.6 s and an empty tank stores no energy. A frozen model that never drains fails here, so 'energy never increased' cannot be satisfied by doing nothing."
+    }
+  ]
+}

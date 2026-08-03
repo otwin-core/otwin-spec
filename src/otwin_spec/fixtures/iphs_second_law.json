@@ -1,0 +1,69 @@
+{
+  "fixture_version": "1.0",
+  "id": "iphs_second_law",
+  "title": "An irreversible port-Hamiltonian system conserves energy and creates entropy",
+  "rationale": "The second law is the point of the irreversible extension (Ramirez, Maschke & Sbarbaro 2013), and sigma >= 0 alone is far too weak a test: a model that puts the heat flow in R instead of in a modulated skew J conserves ENTROPY and destroys ENERGY -- the exact inverse of thermodynamics -- while still reporting a plausible non-negative sigma, because sigma was computed from a formula rather than from the dynamics. This fixture therefore checks all three: that sigma >= 0, that the internal energy of a closed system is conserved, and that the total entropy actually rises. Sample states avoid thermal equilibrium, where sigma = 0 identically and the check would be vacuous.",
+  "model_class": "irreversible_phs",
+  "model_kind": "heat_exchanger_2body",
+  "parameters": {
+    "C1": 1.0,
+    "C2": 2.0,
+    "lambda": 0.5,
+    "_note": "x = [S1, S2] are entropies; U = C1 exp(S1/C1) + C2 exp(S2/C2); T_i = exp(S_i/C_i)"
+  },
+  "scenario": {
+    "sample_states": [
+      [
+        3.0,
+        0.5
+      ],
+      [
+        0.5,
+        3.0
+      ],
+      [
+        2.0,
+        1.0
+      ],
+      [
+        5.0,
+        0.5
+      ]
+    ],
+    "x0": [
+      3.0,
+      0.5
+    ],
+    "t": {
+      "start": 0.0,
+      "stop": 5.0,
+      "num": 2001
+    },
+    "u": {
+      "kind": "zeros"
+    }
+  },
+  "checks": [
+    {
+      "id": "entropy_production_non_negative",
+      "kind": "non_negative",
+      "quantity": "entropy_production",
+      "abs_tol": 1e-12,
+      "closed_form": "sigma = lambda (T1-T2)^2/(T1 T2) >= 0 for all reachable x"
+    },
+    {
+      "id": "internal_energy_conserved",
+      "kind": "relative_drift",
+      "quantity": "energy",
+      "max_drift": 1e-08,
+      "closed_form": "dU/dt = T1 dS1/dt + T2 dS2/dt = -Q + Q = 0. A closed two-body system exchanges energy internally and loses none. A model that puts the heat flow in R fails here, which is exactly the intended trap."
+    },
+    {
+      "id": "total_entropy_increases",
+      "kind": "strictly_increasing",
+      "quantity": "state_sum",
+      "min_increase": 1e-06,
+      "closed_form": "S1 + S2 must rise: entropy is created, not merely moved. A model that conserves entropy passes a sigma >= 0 check and fails this one."
+    }
+  ]
+}

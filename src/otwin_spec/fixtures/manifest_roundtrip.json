@@ -1,0 +1,30 @@
+{
+  "fixture_version": "1.0",
+  "id": "manifest_roundtrip",
+  "title": "A Twin Manifest survives a round-trip unchanged",
+  "rationale": "The manifest is the artifact that crosses the language boundary. If an implementation cannot read back what it wrote, byte-for-byte in value if not in whitespace, nothing else in the ecosystem composes.",
+  "model_class": "empirical_law",
+  "model_kind": "wang_power_law",
+  "parameters": {
+    "c": 0.0031,
+    "z": 0.53
+  },
+  "scenario": {
+    "manifest_fixture": "manifest_example.json"
+  },
+  "checks": [
+    {
+      "id": "schema_valid",
+      "kind": "manifest_schema_valid"
+    },
+    {
+      "id": "roundtrip_identical",
+      "kind": "manifest_roundtrip"
+    },
+    {
+      "id": "rejects_nan",
+      "kind": "manifest_rejects_non_finite",
+      "closed_form": "Serialising a manifest with a NaN parameter must raise. RFC 8259 has no NaN or Infinity; the adapter reports either the error it raised or the bytes it wrote, and the runner judges."
+    }
+  ]
+}

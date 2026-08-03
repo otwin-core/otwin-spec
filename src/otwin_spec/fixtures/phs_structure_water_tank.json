@@ -1,0 +1,47 @@
+{
+  "fixture_version": "1.0",
+  "id": "phs_structure_water_tank",
+  "title": "A port-Hamiltonian model has skew-symmetric J and PSD R",
+  "rationale": "These two algebraic properties are the entire reason the power balance holds by construction rather than by fitting. An implementation that gets them wrong produces forecasts that can create energy, and no amount of accuracy on a test set compensates.",
+  "model_class": "port_hamiltonian",
+  "model_kind": "water_tank",
+  "parameters": {
+    "A": 1.0,
+    "a": 0.1,
+    "g": 9.81,
+    "c_d": 0.6,
+    "rho": 1000.0
+  },
+  "scenario": {
+    "sample_states": [
+      [
+        0.5
+      ],
+      [
+        1.0
+      ],
+      [
+        2.0
+      ],
+      [
+        5.0
+      ]
+    ]
+  },
+  "checks": [
+    {
+      "id": "J_skew",
+      "kind": "matrix_skew_symmetric",
+      "matrix": "J",
+      "abs_tol": 1e-12,
+      "closed_form": "J(x) + J(x)^T = 0"
+    },
+    {
+      "id": "R_psd",
+      "kind": "matrix_psd",
+      "matrix": "R",
+      "abs_tol": 1e-12,
+      "closed_form": "min eig R(x) >= 0"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "fixture_version": "1.0",
+  "id": "dc_motor_coastdown_passivity",
+  "title": "With the voltage removed, a DC motor coasts down and never gains energy",
+  "rationale": "The multi-domain case: two energy stores coupled by a gyrator. A lossless coupling must not manufacture energy in either domain.",
+  "model_class": "port_hamiltonian",
+  "model_kind": "dc_motor",
+  "parameters": {
+    "L": 0.5,
+    "inertia": 0.01,
+    "Re": 1.0,
+    "b": 0.1,
+    "K": 0.5
+  },
+  "scenario": {
+    "x0": [
+      1.4285714285714286,
+      0.14285714285714288
+    ],
+    "t": {
+      "start": 0.0,
+      "stop": 3.0,
+      "num": 1201
+    },
+    "u": {
+      "kind": "zeros"
+    }
+  },
+  "checks": [
+    {
+      "id": "energy_non_increasing",
+      "kind": "monotone_non_increasing",
+      "quantity": "energy",
+      "abs_tol": 1e-09,
+      "closed_form": "dH/dt <= 0 for u = 0"
+    },
+    {
+      "id": "energy_decays_to_zero",
+      "kind": "final_value",
+      "quantity": "energy",
+      "expected": 0.0,
+      "abs_tol": 0.001,
+      "closed_form": "a dissipative system with no input relaxes to the zero-energy state"
+    }
+  ]
+}

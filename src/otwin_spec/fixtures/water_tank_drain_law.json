@@ -1,0 +1,52 @@
+{
+  "fixture_version": "1.0",
+  "id": "water_tank_drain_law",
+  "title": "A draining tank follows Torricelli's law exactly",
+  "rationale": "Integrating dh/dt = -c_d a sqrt(2 g h)/A gives h(t) = (sqrt(h0) - c_d a sqrt(2g) t/(2A))^2, an exact solution with nothing fitted. This fixture exists because the port-Hamiltonian form of Torricelli's law is easy to get subtly wrong: requiring R grad_H to reproduce the rate of change of HEAD (not of volume) gives R = c_d a sqrt(2g/h)/(rho g A^2), and dropping the g under the radical or one factor of A yields a model that is dimensionally inconsistent (dh/dt in m^2.5) yet still produces a smooth, plausible decay curve. That exact error existed in a real implementation and no accuracy test caught it -- only dimensional analysis did. Here it shows up as a 157 percent error against the closed form. The horizon stops well before the tank empties, so this fixture tests the drain law alone, uncontaminated by the empty-tank boundary.",
+  "model_class": "port_hamiltonian",
+  "model_kind": "water_tank",
+  "parameters": {
+    "A": 1.0,
+    "a": 0.1,
+    "g": 9.81,
+    "c_d": 0.6,
+    "rho": 1000.0,
+    "_units": "A, a in m^2; g in m/s^2; c_d dimensionless; rho in kg/m^3"
+  },
+  "scenario": {
+    "x0": [
+      2.0
+    ],
+    "t": {
+      "start": 0.0,
+      "stop": 5.0,
+      "num": 501
+    },
+    "u": {
+      "kind": "zeros"
+    }
+  },
+  "checks": [
+    {
+      "id": "head_matches_closed_form",
+      "kind": "final_value",
+      "quantity": "state",
+      "index": 0,
+      "expected": 0.5621948283961011,
+      "rel_tol": 1e-08,
+      "closed_form": "h(t) = (sqrt(h0) - c_d a sqrt(2g) t / (2A))^2, exact for Torricelli discharge"
+    },
+    {
+      "id": "energy_non_increasing",
+      "kind": "monotone_non_increasing",
+      "quantity": "energy",
+      "abs_tol": 1e-09,
+      "closed_form": "dH/dt <= 0 for u = 0"
+    }
+  ],
+  "derived_quantities": {
+    "h_at_5s": 0.5621948283961011,
+    "wrong_model_h_at_5s": 1.445,
+    "note": "a model missing sqrt(g)/A gives 1.445 instead of 0.562"
+  }
+}

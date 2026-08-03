@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "otwin-spec"
+version = "0.1.0"
+description = "The normative Otwin specification: Twin Manifest schema, golden fixtures with analytic answers, and a language-agnostic conformance runner."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{name = "Javier Marin", email = "javier@jmarin.info"}]
+keywords = ["digital-twin", "conformance", "specification", "port-hamiltonian", "interoperability"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = ["numpy>=1.21.0"]
+
+[project.optional-dependencies]
+schema = ["jsonschema>=4.0"]
+dev = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "mypy>=1.8", "ruff>=0.5", "black>=24.0", "jsonschema>=4.0"]
+
+[project.scripts]
+otwin-conformance = "otwin_spec.runner:main"
+
+[project.urls]
+Homepage = "https://github.com/otwin-core/otwin-spec"
+Contract = "https://github.com/otwin-core/otwin-base"
+Organization = "https://github.com/otwin-core"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.setuptools.package-data]
+otwin_spec = ["schemas/*.json", "fixtures/*.json", "py.typed"]
+
+[tool.black]
+line-length = 95
+target-version = ["py310"]
+[tool.ruff]
+line-length = 95
+target-version = "py310"
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501", "N802", "N803", "N806", "N815"]
+[tool.mypy]
+python_version = "3.10"
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -q --strict-markers"

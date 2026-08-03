@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otwin-core.github.io/otwin-spec/schemas/fixture-1.0.json",
+  "title": "Otwin conformance fixture",
+  "description": "A physical system with an analytically known answer. NOTE: the document an adapter receives is the fixture with `checks`, `rationale` and `derived_quantities` REMOVED (see runner.as_task). An adapter that can read the expected values can echo them back and pass without containing any physics.",
+  "type": "object",
+  "required": [
+    "fixture_version",
+    "id",
+    "title",
+    "rationale",
+    "model_class",
+    "model_kind",
+    "parameters",
+    "scenario",
+    "checks"
+  ],
+  "properties": {
+    "fixture_version": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "rationale": {
+      "type": "string",
+      "minLength": 40,
+      "description": "What goes wrong if this is not checked. A fixture without a stated reason cannot be argued with or improved."
+    },
+    "model_class": {
+      "enum": [
+        "port_hamiltonian",
+        "irreversible_phs",
+        "empirical_law",
+        "learned_phs",
+        "composite"
+      ]
+    },
+    "model_kind": {
+      "type": "string"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Every parameter the model needs. Keys beginning with '_' are documentation (units, notes) and MUST be ignored by adapters."
+    },
+    "state_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "properties": {
+        "x0": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "t": {
+          "type": "object",
+          "required": [
+            "start",
+            "stop",
+            "num"
+          ],
+          "properties": {
+            "start": {
+              "type": "number"
+            },
+            "stop": {
+              "type": "number"
+            },
+            "num": {
+              "type": "integer",
+              "minimum": 2
+            }
+          }
+        },
+        "u": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "zeros",
+                "constant"
+              ]
+            },
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "sample_states": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "manifest_fixture": {
+          "type": "string"
+        }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "monotone_non_increasing",
+              "strictly_increasing",
+              "final_value",
+              "relative_drift",
+              "non_negative",
+              "lower_bound",
+              "matrix_skew_symmetric",
+              "matrix_psd",
+              "matrix_equals",
+              "manifest_schema_valid",
+              "manifest_roundtrip",
+              "manifest_rejects_non_finite"
+            ]
+          },
+          "quantity": {
+            "enum": [
+              "state",
+              "energy",
+              "entropy_production",
+              "state_sum"
+            ]
+          },
+          "index": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "matrix": {
+            "type": "string"
+          },
+          "expected": {
+            "type": "number"
+          },
+          "bound": {
+            "type": "number"
+          },
+          "value": {
+            "type": "number"
+          },
+          "max_drift": {
+            "type": "number"
+          },
+          "min_increase": {
+            "type": "number"
+          },
+          "abs_tol": {
+            "type": "number"
+          },
+          "rel_tol": {
+            "type": "number"
+          },
+          "closed_form": {
+            "type": "string",
+            "description": "The analytic statement being verified. Copied into failure reports so they are self-contained."
+          }
+        }
+      }
+    },
+    "derived_quantities": {
+      "type": "object"
+    }
+  }
+}

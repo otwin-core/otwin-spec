@@ -1,0 +1,62 @@
+{
+  "fixture_version": "1.0",
+  "id": "pumped_hydro_conservation",
+  "title": "A sealed pumped-hydro store holds its energy",
+  "rationale": "J = 0 for this system: there is no lossless circulation path between the reservoirs, so water moves only through the penstock (R) or the pump-turbine port (g). With the valve shut and the pump off, the only loss is the penstock conductance c, and the energy budget is therefore known in closed form rather than measured from a previous run: dH/dt = -grad_H^T R grad_H = -c (p_u - p_l)^2. Note that J = 0 does NOT by itself imply conservation -- the power balance contains no J at all -- so the fixture checks the analytic leakage rate, not a folk theorem.",
+  "model_class": "port_hamiltonian",
+  "model_kind": "pumped_hydro",
+  "parameters": {
+    "A_u": 50000.0,
+    "A_l": 5000000.0,
+    "z_u": 300.0,
+    "g": 9.81,
+    "rho": 1000.0,
+    "c": 1e-09,
+    "_units": "A_u, A_l in m^2; z_u in m; g in m/s^2; rho in kg/m^3; c is the penstock conductance in m^3/(s.Pa)"
+  },
+  "scenario": {
+    "x0": [
+      4000000.0,
+      8000000.0
+    ],
+    "t": {
+      "start": 0.0,
+      "stop": 10800.0,
+      "num": 1081
+    },
+    "u": {
+      "kind": "zeros"
+    }
+  },
+  "checks": [
+    {
+      "id": "energy_non_increasing",
+      "kind": "monotone_non_increasing",
+      "quantity": "energy",
+      "abs_tol": 1e-06,
+      "closed_form": "dH/dt = -c (p_u - p_l)^2 <= 0 with the pump off: a store may leak, never gain"
+    },
+    {
+      "id": "leakage_matches_closed_form",
+      "kind": "relative_drift",
+      "quantity": "energy",
+      "max_drift": 1.6653611e-05,
+      "closed_form": "|H(T)-H(0)|/H(0) = c (p_u-p_l)^2 T / H(0) = 1.110241e-05; the bound is 1.5x that. A model leaking materially more or less than the penstock allows fails."
+    },
+    {
+      "id": "J_is_zero",
+      "kind": "matrix_equals",
+      "matrix": "J",
+      "value": 0.0,
+      "abs_tol": 1e-12,
+      "closed_form": "J = 0: there is no lossless circulation path between reservoirs"
+    }
+  ],
+  "derived_quantities": {
+    "p_u_Pa": 3727800.0,
+    "p_l_Pa": 15696.0,
+    "H0_J": 13404384000000.0,
+    "leak_W": 13779.716106816,
+    "analytic_drift": 1.1102407537236533e-05
+  }
+}

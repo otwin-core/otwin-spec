@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otwin-core.github.io/otwin-spec/schemas/result-1.0.json",
+  "title": "Otwin conformance result",
+  "description": "What an adapter writes to stdout. It reports NUMBERS ONLY and never judges itself: all judgement happens in otwin-spec, so a bug in one language's checking code cannot hide a bug in that language's models.",
+  "type": "object",
+  "required": [
+    "fixture_id",
+    "outputs"
+  ],
+  "properties": {
+    "fixture_id": {
+      "type": "string"
+    },
+    "implementation": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "unsupported": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Fixture ids this implementation declares out of scope. A declared gap does not block conformance; a wrong answer does."
+    },
+    "outputs": {
+      "type": "object",
+      "properties": {
+        "t": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "state": {
+          "type": "array",
+          "description": "(n_steps, n_states) or a list of sample states"
+        },
+        "state_sum": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "energy": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "entropy_production": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "matrices": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "description": "A list of (n x n) matrices, one per evaluated state. MUST be nested row-wise, not flattened."
+          }
+        },
+        "manifest": {
+          "type": "object"
+        },
+        "manifest_roundtrip": {
+          "type": "object"
+        },
+        "non_finite_attempt": {
+          "type": "object",
+          "description": "Evidence from attempting to serialise a manifest with a NaN parameter: either {'raised': '<message>'} or {'bytes': '<what was written>'}. The runner judges; the adapter does not.",
+          "properties": {
+            "raised": {
+              "type": "string"
+            },
+            "bytes": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

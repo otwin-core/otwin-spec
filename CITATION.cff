@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "otwin-spec: a conformance specification for physics-informed digital twins"
+abstract: "The normative Otwin specification: the Twin Manifest JSON schema, golden fixtures whose answers are known in closed form, and a language-agnostic conformance runner that judges implementations in Python, Julia and MATLAB."
+type: software
+authors:
+  - family-names: "Marin"
+    given-names: "Javier"
+    email: "javier@jmarin.info"
+    orcid: "https://orcid.org/0000-0000-0000-0000"   # TODO: replace with your real ORCID
+repository-code: "https://github.com/otwin-core/otwin-spec"
+url: "https://github.com/otwin-core"
+license: Apache-2.0
+version: "0.1.0"
+date-released: "2026-08-03"
+keywords:
+  - digital twin
+  - port-Hamiltonian
+  - physics-informed machine learning
+  - uncertainty quantification
+  - scientific machine learning

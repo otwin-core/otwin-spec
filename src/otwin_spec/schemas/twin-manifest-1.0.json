@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://otwin-core.github.io/otwin-spec/schemas/twin-manifest-1.0.json",
+  "title": "Otwin Twin Manifest",
+  "description": "A complete, portable, language-neutral description of a fitted digital twin. Written and read identically by the Python, Julia and MATLAB implementations.",
+  "type": "object",
+  "required": ["name", "model_class", "model_kind", "n_states", "n_inputs", "provenance"],
+  "additionalProperties": true,
+  "properties": {
+    "manifest_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+$",
+      "default": "1.0",
+      "description": "Schema version. Readers MUST warn on a major-version mismatch and MUST preserve unknown fields."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable identifier for this twin."
+    },
+    "model_class": {
+      "type": "string",
+      "enum": ["port_hamiltonian", "irreversible_phs", "empirical_law", "learned_phs", "composite"],
+      "description": "Which model structure. Determines which conformance checks apply."
+    },
+    "model_kind": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The specific model, e.g. water_tank, dc_motor, wang_power_law."
+    },
+    "n_states": {"type": "integer", "minimum": 1},
+    "n_inputs": {"type": "integer", "minimum": 0},
+    "parameters": {
+      "type": "object",
+      "description": "Parameter values. Non-finite numbers are FORBIDDEN: NaN and Infinity are not valid JSON (RFC 8259) and are rejected by Julia's JSON3 and MATLAB's jsondecode.",
+      "additionalProperties": true
+    },
+    "estimated": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true,
+      "description": "Names of parameters estimated from data. MUST be a subset of parameters. An empty array means the twin is white-box and MAY be validated against a closed-form answer; a non-empty array means grey-box and validation MUST use held-out data with a baseline."
+    },
+    "validation": {
+      "type": ["object", "null"],
+      "description": "Canonically the output of Report.to_dict().",
+      "properties": {
+        "protocol": {"type": "string"},
+        "leakage_free": {
+          "type": "boolean",
+          "description": "MUST be a JSON boolean, not 1/0 and not a string. Readers MUST treat any non-true value as not validated."
+        },
+        "n_folds": {"type": "integer", "minimum": 0},
+        "mean_skill": {"type": ["number", "null"]},
+        "metrics": {"type": "array", "items": {"$ref": "#/$defs/metricSet"}}
+      }
+    },
+    "calibration": {
+      "type": ["object", "null"],
+      "description": "Canonically the output of Interval.to_dict(), or a summary of it.",
+      "properties": {
+        "method": {"type": "string"},
+        "level": {"type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1},
+        "empirical_coverage": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+      }
+    },
+    "provenance": {"$ref": "#/$defs/provenance"}
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "required": ["created", "otwin_version"],
+      "properties": {
+        "created": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+          "description": "UTC, second resolution, Z suffix. Offsets and fractional seconds are FORBIDDEN: Julia's Dates.DateTime cannot parse an offset without TimeZones.jl, and MATLAB's datetime needs an explicit InputFormat for microseconds."
+        },
+        "otwin_version": {"type": "string"},
+        "implementation": {"type": "string", "enum": ["python", "julia", "matlab", "other"]},
+        "script": {"type": ["string", "null"]},
+        "commit": {"type": ["string", "null"]},
+        "seed": {"type": ["integer", "null"]},
+        "data_source": {"type": ["string", "null"]},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "metricSet": {
+      "type": "object",
+      "required": ["rmse", "mae", "skill", "baseline_name"],
+      "properties": {
+        "rmse": {"type": "number"},
+        "mae": {"type": "number"},
+        "skill": {"type": "number", "description": "Model error divided by baseline error. The headline metric. Below 1 means the model beats its baseline."},
+        "baseline_name": {"type": "string"},
+        "mase": {"type": "number"},
+        "theil_u": {"type": "number"},
+        "crps": {"type": "number"},
+        "picp": {"type": "number"},
+        "mpiw": {"type": "number"},
+        "r2": {"type": "number", "description": "Present for familiarity only. NOT a headline metric for forecasting."},
+        "extra": {"type": "object", "additionalProperties": {"type": "number"}}
+      }
+    }
+  }
+}

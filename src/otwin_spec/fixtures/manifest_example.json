@@ -1,0 +1,44 @@
+{
+  "manifest_version": "1.0",
+  "name": "NASA-B0005-SoH",
+  "model_class": "empirical_law",
+  "model_kind": "wang_power_law",
+  "n_states": 1,
+  "n_inputs": 0,
+  "parameters": {
+    "c": 0.0031,
+    "z": 0.53
+  },
+  "estimated": [
+    "c",
+    "z"
+  ],
+  "validation": {
+    "protocol": "rolling_origin",
+    "leakage_free": true,
+    "n_folds": 5,
+    "mean_skill": 0.31,
+    "metrics": [
+      {
+        "rmse": 0.0121,
+        "mae": 0.0094,
+        "skill": 0.31,
+        "baseline_name": "persistence",
+        "theil_u": 0.42
+      }
+    ]
+  },
+  "calibration": {
+    "method": "conformal",
+    "level": 0.9,
+    "empirical_coverage": 0.91
+  },
+  "provenance": {
+    "created": "2026-08-03T00:00:00Z",
+    "otwin_version": "0.1.0",
+    "implementation": "python",
+    "script": "examples/battery_soh/run_battery_soh.py",
+    "seed": 0,
+    "data_source": "NASA Ames Prognostics Center, Li-ion Battery Aging Dataset"
+  }
+}
