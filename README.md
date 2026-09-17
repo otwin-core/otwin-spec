@@ -1,18 +1,16 @@
-# otwin-spec
+<div align="center">
 
-**The normative Otwin specification, and a conformance suite that can judge any implementation in any language.**
+<img src="https://raw.githubusercontent.com/otwin-core/otwin/main/assets/otwin_wm.png" width="35%">
 
-[![CI](https://img.shields.io/github/actions/workflow/status/otwin-core/otwin-spec/ci.yml?style=flat-square&label=CI)](https://github.com/otwin-core/otwin-spec/actions)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
+# The normative Otwin specification, and a conformance suite that can judge any implementation in any language
+
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat-square)](https://opensource.org/license/apache-2-0)
-[![Stars](https://img.shields.io/github/stars/otwin-core/otwin-spec?style=flat-square&label=Stars)](https://github.com/otwin-core/otwin-spec/stargazers)
-[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/otwin-core/otwin-spec?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/otwin-core/otwin-spec)
 
----
+</div>
 
 ## What this is
 
-Otwin is Python-first, with bindings to Julia and MATLAB. This package is what stops those three from drifting apart, and what turns "physics-informed" from a claim into a property that something checks.
+Otwin is Python-first. This package is what turns "physics-informed" from a claim into a property that something checks.
 
 ```bash
 pip install otwin-spec
@@ -36,7 +34,7 @@ otwin-conformance python
   conformant: yes
 ```
 
----
+<br>
 
 ## Why bother
 
@@ -73,7 +71,7 @@ Every fixture is a physical system whose correct answer is known in closed form.
 
 The DC motor structure is van der Schaft & Jeltsema (2014), Example 2.5. The irreversible system follows Ramírez, Maschke & Sbarbaro (2013).
 
----
+<br>
 
 ## The suite has teeth, and proves it
 
@@ -105,7 +103,7 @@ Two further properties of the runner deserve naming, because both are ways a sui
 - **Silence is not conformance.** An adapter that reports no numbers gets every check skipped — and a fixture whose checks all skipped does **not** pass. An empty implementation cannot earn a green badge.
 - **Declared gaps are honest; silent ones are not.** A binding may list a fixture in `unsupported` and remain conformant-so-far. A binding that attempts a fixture and gets it wrong fails.
 
----
+<br>
 
 ## Writing an adapter for a new language
 
@@ -137,7 +135,7 @@ otwin-conformance python --report conformance.json --badge badge.json
 
 `--badge` writes a shields.io endpoint payload, so any repository can display its conformance status.
 
----
+<br>
 
 ## Reference models live here, deliberately
 
@@ -147,7 +145,7 @@ A specification that can only be checked by running the thing it specifies is no
 
 RK4 is used on purpose even though it is not structure-preserving: the fixtures must be passable by an ordinary integrator on a reasonable grid, so that a failure means a wrong *model* rather than a less sophisticated stepper. A tolerance tighter than RK4 can meet would turn this into a test of numerical methods rather than of physics.
 
----
+<br>
 
 ## The Twin Manifest
 
@@ -157,7 +155,7 @@ RK4 is used on purpose even though it is not structure-preserving: the fixtures 
 2. **Timestamps are `YYYY-MM-DDTHH:MM:SSZ`.** Julia's `Dates.DateTime` cannot parse an offset without `TimeZones.jl`; MATLAB's `datetime` needs an explicit format for microseconds.
 3. **`leakage_free` must be a real boolean.** MATLAB and Julia both round-trip booleans to `1`, `0` or a string under some configurations, and the field that certifies honest validation must not accept those.
 
----
+<br>
 
 ## Contributing
 
@@ -176,7 +174,7 @@ Other ways in: adapters for new languages, tightening a tolerance with justifica
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) · practices follow [ColPrac](https://github.com/SciML/ColPrac).
 
----
+<br>
 
 ## Documents
 
@@ -185,10 +183,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) · practices follow [ColPrac](https://git
 - [`fixtures/`](src/otwin_spec/fixtures) — golden fixtures, one JSON file each
 - [`otwin-base`](https://github.com/otwin-core/otwin-base) — the Python expression of the same contract
 
+<br>
+
 ## How to cite
 
 See [CITATION.cff](CITATION.cff).
-
-## License
-
-Apache 2.0.
