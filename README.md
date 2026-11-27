@@ -12,7 +12,7 @@
 
 ## What this is
 
-Otwin is Python-first, with bindings to Julia and MATLAB. This package is what stops those three from drifting apart, and what turns "physics-informed" from a claim into a property that something checks.
+Otwin is Python-first, with bindings to Julia. This package is what stops those three from drifting apart, and what turns "physics-informed" from a claim into a property that something checks.
 
 ```bash
 pip install otwin-spec
